@@ -1,0 +1,355 @@
+<template>
+  <div id="booksmart">
+    <div class="booksmart__logo">
+      <img src="../assets/bookmark_without_border.png" />
+      <h1>Booksmart</h1>
+    </div>
+    <div class="booksmart__add-folder">
+      <h2>Add a folder</h2>
+      <input
+        type="text"
+        id="booksmart__add-folder-input"
+        placeholder="Type here..."
+        v-model="newFolder"
+        v-on:keyup.enter="addFolder(newFolder)"
+      /><button
+        class="booksmart__add-folder-button"
+        type="submit"
+        id="addFolderButton"
+        @click="addFolder(newFolder)"
+      >
+        +
+      </button>
+    </div>
+    <div v-if="!loading">
+      <div
+        id="booksmart__folders-list"
+        class="booksmart__folders-list"
+        v-for="(folder, index) in folders"
+        :key="index"
+      >
+        <div class="booksmart__folder-element">
+          <h3
+              v-bind:style="{backgroundColor: colors[index]}"
+            @click="togglePages(index)"
+          >
+            {{ Object.keys(folder)[0] }}
+            <button
+              v-if="
+                Object.values(folder)[0].length > 0 && !openPages[index][index]
+              "
+              class="booksmart__dropdown-button booksmart__dropdown-button-open"
+              @click="togglePages(index)"
+            ></button>
+            <button
+              v-if="
+                Object.values(folder)[0].length > 0 && openPages[index][index]
+              "
+              class="booksmart__dropdown-button booksmart__dropdown-button-hide"
+              @click="togglePages(index)"
+            ></button>
+          </h3>
+          <button class="booksmart__remove-button" @click="deleteFolder(index)">
+            -</button
+          ><button
+            class="booksmart__add-button"
+            @click="addPage(index, Object.keys(folder)[0])"
+          >
+            +
+          </button>
+          <ul
+            class="booksmart__links-list"
+            v-if="
+              Object.values(folder)[0].length > 0 && openPages[index][index]
+            "
+          >
+            <li
+              class="booksmart__link-item"
+              v-for="(page, subindex) in Object.values(folder)[0]"
+              :key="subindex"
+            >
+              <a :href="page.url" target="_blank">{{ page.title }}</a
+              ><button
+                class="booksmart__remove-button"
+                @click="deletePage(index, subindex)"
+              >
+                -
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "App",
+  data() {
+    return {
+      newFolder: null,
+      folders: [],
+      pages: [],
+      loading: true,
+      openPages: [
+        { 0: false },
+        { 1: false },
+        { 2: false },
+        { 3: false },
+        { 4: false },
+        { 5: false },
+        { 6: false },
+        { 7: false },
+        { 8: false },
+        { 9: false },
+        { 10: false },
+      ],
+      colors: ["#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a","#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a","#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a"]
+
+    };
+  },
+  mounted() {
+    this.loadFolders();
+  },
+  methods: {
+    togglePages(index) {
+      this.openPages[index][index] = !this.openPages[index][index];
+    },
+    deletePage(index, subindex) {
+      Object.values(this.folders[index])[0].splice(subindex, 1);
+      chrome.storage.local.set({ folderList: this.folders });
+    },
+    addPage(index, key) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        let pageObject = {};
+        pageObject["title"] = tabs[0].title;
+        pageObject["url"] = tabs[0].url;
+        this.folders[index][key].push(pageObject);
+        chrome.storage.local.set({ folderList: this.folders });
+      });
+      this.openPages[index][index] = true
+    },
+    deleteFolder(index) {
+      this.folders.splice(index, 1);
+      chrome.storage.local.set({ folderList: this.folders });
+    },
+    loadFolders() {
+      chrome.storage.local.get("folderList", (data) => {
+        // check if there are any folders already
+        if (data.folderList === undefined || data.folderList.length == 0) {
+          chrome.storage.local.set({ folderList: [] });
+        } else {
+          this.folders = data.folderList;
+          this.loading = false;
+        }
+      });
+    },
+    addFolder(newFolder) {
+      let newFolderObject = {};
+      newFolderObject[newFolder] = [];
+      this.folders.push(newFolderObject);
+      chrome.storage.local.set({ folderList: this.folders });
+      this.newFolder = null;
+      this.loading = false;
+    },
+  },
+};
+</script>
+
+<style>
+body {
+  margin:0
+}
+
+#booksmart {
+  background-image: linear-gradient(137deg, #423759 -85%, #19192d 100%);
+  width: 520px;
+  padding: 24px 65px;
+  font-family: "Lato", sans-serif;
+}
+
+.booksmart__logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.booksmart__logo img {
+  height: 25px;
+  margin-right: 5px;
+}
+.booksmart__logo h1 {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 18px;
+  color: #d2d2d2;
+  font-weight: 500;
+}
+
+.booksmart__add-folder {
+  width: 262px;
+  height: 71px;
+  border-radius: 10px;
+  box-shadow: 0 4px -1px 1px rgba(92, 69, 69, 0.5);
+  background: url("../assets/bookmark_add_folder_bg.png") no-repeat;
+  background-size: contain;
+  margin: 0 auto 20px;
+  padding: 14px 25px;
+}
+
+.booksmart__add-folder h2 {
+  font-size: 12px;
+  color: white;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.booksmart__add-folder input {
+  border-radius: 8px;
+  background-color: rgba(62, 58, 58, 0.66);
+  width: 178px;
+  height: 25px;
+  border: none;
+  padding-left: 10px;
+  color: white;
+  font-family: "Lato", sans-serif;
+  outline: none;
+  margin-right: 12px;
+}
+
+.booksmart__add-folder input::placeholder {
+  color: #cac8c8;
+  opacity: 0.3;
+  font-size: 12px;
+  font-family: "Lato", sans-serif !important;
+}
+
+.booksmart__add-folder-button {
+  width: 32px;
+  height: 25px;
+  background-color: #2cc6b0;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  outline: none;
+  cursor: pointer;
+}
+.booksmart__folders-list {
+  list-style-type: none;
+  text-align: center;
+}
+.booksmart__folder-element h3 {
+  width: 145px;
+  height: 26px;
+  border-radius: 14px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+  background-color: #b95072;
+  font-size: 12px;
+  text-align: center;
+  color: white;
+  padding-top: 10px;
+  display: inline-block;
+  margin-right: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.booksmart__folder-element button {
+  display: inline;
+}
+
+.booksmart__remove-button {
+  width: 20px;
+  height: 20px;
+  background-color: #d55962;
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 50%;
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.booksmart__add-button {
+  width: 20px;
+  height: 20px;
+  background-color: #1bbc98;
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+.booksmart__links-list {
+  display: block;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: white;
+  margin-top: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.booksmart__link-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+}
+
+.booksmart__link-item:last-child {
+  margin-bottom: 0;
+}
+
+.booksmart__link-item button {
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+}
+
+.booksmart__link-item a {
+  color: #928d8d;
+  text-decoration: none;
+  text-align: left;
+}
+
+.booksmart__link-item a:hover {
+  color: #d55962;
+}
+
+.booksmart__link-item li {
+  list-style-type: none;
+}
+
+.booksmart__dropdown-button {
+  background: url("../assets/chevron.svg") 3px 5px no-repeat !important;
+  width: 10px;
+  height: 10px;
+  color: white;
+  border: none;
+  outline: none;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;  
+}
+
+.booksmart__dropdown-button-open {
+  transform: rotate(0deg);
+}
+.booksmart__dropdown-button-hide {
+  transform: rotate(-180deg);
+  left: 13px;
+  top: 14px;
+}
+</style>
