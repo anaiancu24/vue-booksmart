@@ -28,28 +28,46 @@
         v-for="(folder, index) in folders"
         :key="index"
       >
+        <div
+          v-if="deleteConfirmation[index][index]"
+          class="booksmart_delete-confirmation"
+        >
+          <h2>You sure about that?</h2>
+          <p>All your saved bookmarks will be deleted, too</p>
+          <div class="buttons">
+            <button @click="deleteFolder(index)">Yes, delete</button>
+            <button @click="deleteConfirmation[index][index] = false">
+              No, cancel
+            </button>
+          </div>
+        </div>
         <div class="booksmart__folder-element">
-          <h3
-              v-bind:style="{backgroundColor: colors[index]}"
+          <div
+            class="booksmart__folder-label"
+            v-bind:style="{ backgroundColor: colors[index] }"
             @click="togglePages(index)"
           >
-            {{ Object.keys(folder)[0] }}
             <button
               v-if="
                 Object.values(folder)[0].length > 0 && !openPages[index][index]
               "
               class="booksmart__dropdown-button booksmart__dropdown-button-open"
-              @click="togglePages(index)"
             ></button>
             <button
               v-if="
                 Object.values(folder)[0].length > 0 && openPages[index][index]
               "
               class="booksmart__dropdown-button booksmart__dropdown-button-hide"
-              @click="togglePages(index)"
             ></button>
-          </h3>
-          <button class="booksmart__remove-button" @click="deleteFolder(index)">
+            <h3>
+              {{ Object.keys(folder)[0] }}
+            </h3>
+          </div>
+
+          <button
+            class="booksmart__remove-button"
+            @click="deleteConfirmation[index][index] = true"
+          >
             -</button
           ><button
             class="booksmart__add-button"
@@ -57,27 +75,25 @@
           >
             +
           </button>
-          <ul
-            class="booksmart__links-list"
-            v-if="
-              Object.values(folder)[0].length > 0 && openPages[index][index]
-            "
-          >
-            <li
-              class="booksmart__link-item"
-              v-for="(page, subindex) in Object.values(folder)[0]"
-              :key="subindex"
-            >
-              <a :href="page.url" target="_blank">{{ page.title }}</a
-              ><button
-                class="booksmart__remove-button"
-                @click="deletePage(index, subindex)"
-              >
-                -
-              </button>
-            </li>
-          </ul>
         </div>
+        <ul
+          class="booksmart__links-list"
+          v-if="Object.values(folder)[0].length > 0 && openPages[index][index]"
+        >
+          <li
+            class="booksmart__link-item"
+            v-for="(page, subindex) in Object.values(folder)[0]"
+            :key="subindex"
+          >
+            <a :href="page.url" target="_blank">{{ page.title }}</a
+            ><button
+              class="booksmart__remove-button"
+              @click="deletePage(index, subindex)"
+            >
+              -
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -104,9 +120,92 @@ export default {
         { 8: false },
         { 9: false },
         { 10: false },
+        { 11: false },
+        { 12: false },
+        { 13: false },
+        { 14: false },
+        { 15: false },
+        { 16: false },
+        { 17: false },
+        { 18: false },
+        { 19: false },
+        { 20: false },
+        { 21: false },
+        { 22: false },
+        { 23: false },
+        { 24: false },
+        { 25: false },
+        { 26: false },
+        { 27: false },
+        { 28: false },
+        { 29: false },
+        { 30: false }
       ],
-      colors: ["#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a","#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a","#fda6a5", "#b95072", "#893c55", "#d66175", "#d62155", "#e66165", "#b95a7a", "#eda4b5", "#a83a55", "#9c335a"]
-
+      colors: [
+        "#fda6a5",
+        "#b95072",
+        "#893c55",
+        "#d66175",
+        "#d62155",
+        "#e66165",
+        "#b95a7a",
+        "#eda4b5",
+        "#a83a55",
+        "#9c335a",
+        "#fda6a5",
+        "#b95072",
+        "#893c55",
+        "#d66175",
+        "#d62155",
+        "#e66165",
+        "#b95a7a",
+        "#eda4b5",
+        "#a83a55",
+        "#9c335a",
+        "#fda6a5",
+        "#b95072",
+        "#893c55",
+        "#d66175",
+        "#d62155",
+        "#e66165",
+        "#b95a7a",
+        "#eda4b5",
+        "#a83a55",
+        "#9c335a",
+      ],
+      deleteConfirmation: [
+        { 0: false },
+        { 1: false },
+        { 2: false },
+        { 3: false },
+        { 4: false },
+        { 5: false },
+        { 6: false },
+        { 7: false },
+        { 8: false },
+        { 9: false },
+        { 10: false },
+        { 11: false },
+        { 12: false },
+        { 13: false },
+        { 14: false },
+        { 15: false },
+        { 16: false },
+        { 17: false },
+        { 18: false },
+        { 19: false },
+        { 20: false },
+        { 21: false },
+        { 22: false },
+        { 23: false },
+        { 24: false },
+        { 25: false },
+        { 26: false },
+        { 27: false },
+        { 28: false },
+        { 29: false },
+        { 30: false }
+      ],
     };
   },
   mounted() {
@@ -128,11 +227,12 @@ export default {
         this.folders[index][key].push(pageObject);
         chrome.storage.local.set({ folderList: this.folders });
       });
-      this.openPages[index][index] = true
+      this.openPages[index][index] = true;
     },
     deleteFolder(index) {
       this.folders.splice(index, 1);
       chrome.storage.local.set({ folderList: this.folders });
+      this.deleteConfirmation[index][index] = false;
     },
     loadFolders() {
       chrome.storage.local.get("folderList", (data) => {
@@ -159,7 +259,7 @@ export default {
 
 <style>
 body {
-  margin:0
+  margin: 0;
 }
 
 #booksmart {
@@ -238,8 +338,19 @@ body {
 .booksmart__folders-list {
   list-style-type: none;
   text-align: center;
+  margin-bottom:20px;
 }
-.booksmart__folder-element h3 {
+
+.booksmart__folder-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.booksmart__folder-label {
+  position:relative;
+  padding:4px;
   width: 145px;
   height: 26px;
   border-radius: 14px;
@@ -248,15 +359,44 @@ body {
   font-size: 12px;
   text-align: center;
   color: white;
-  padding-top: 10px;
   display: inline-block;
   margin-right: 10px;
   position: relative;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.booksmart__dropdown-button {
+  background: url("../assets/chevron.svg") 3px 5px no-repeat !important;
+  position: relative;
+  left: -20px;
+  top: -1px;
+  width: 10px;
+  height: 10px;
+  color: white;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booksmart__dropdown-button-open {
+  transform: rotate(0deg);
+}
+.booksmart__dropdown-button-hide {
+  transform: rotate(-180deg);
+  left: -17px;
+  top: 3px;
+}
+
+
 .booksmart__folder-element button {
-  display: inline;
+  display:flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .booksmart__remove-button {
@@ -290,7 +430,6 @@ body {
   padding: 12px 20px;
   border-radius: 14px;
   background: white;
-  margin-top: 0;
 }
 
 .hidden {
@@ -329,27 +468,41 @@ body {
   list-style-type: none;
 }
 
-.booksmart__dropdown-button {
-  background: url("../assets/chevron.svg") 3px 5px no-repeat !important;
-  width: 10px;
-  height: 10px;
-  color: white;
-  border: none;
-  outline: none;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  background: none;
-  cursor: pointer;
-  transition: all 0.2s ease;  
+.booksmart_delete-confirmation {
+  position: relative;
+  z-index: 100;
+  width: 200px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 13px 1000px rgb(4 4 4 / 50%);
+  text-align: center;
+  padding: 12px;
 }
 
-.booksmart__dropdown-button-open {
-  transform: rotate(0deg);
+.booksmart_delete-confirmation h2 {
+  margin: 0;
+  color: #19192d;
 }
-.booksmart__dropdown-button-hide {
-  transform: rotate(-180deg);
-  left: 13px;
-  top: 14px;
+
+.booksmart_delete-confirmation p {
+  color: #423759;
+}
+
+.booksmart_delete-confirmation button {
+  background: #d55962;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.booksmart_delete-confirmation .buttons {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
