@@ -12,7 +12,8 @@
         placeholder="Type here..."
         v-model="newFolder"
         v-on:keyup.enter="addFolder(newFolder)"
-      /><button
+      />
+      <button
         class="booksmart__add-folder-button"
         type="submit"
         id="addFolderButton"
@@ -33,11 +34,11 @@
           class="booksmart_delete-confirmation"
         >
           <h2>You sure about that?</h2>
-          <p>All your saved bookmarks will be deleted, too</p>
+          <p>All your bookmarks within this folder will be deleted, too.</p>
           <div class="buttons">
-            <button @click="deleteFolder(index)">Yes, delete</button>
+            <button @click="deleteFolder(index)">Delete</button>
             <button @click="deleteConfirmation[index][index] = false">
-              No, cancel
+              Cancel
             </button>
           </div>
         </div>
@@ -96,6 +97,12 @@
         </ul>
       </div>
     </div>
+  <a href="https://www.paypal.com/donate?hosted_button_id=ZGVSUWAXLH2SY" target="_blank"> 
+  <div class="booksmart__donate-label">
+    <img src="../assets/Coffee_Icon.svg" />
+    <span>Buy me a coffee</span>
+    </div>
+  </a>
   </div>
 </template>
 
@@ -212,6 +219,10 @@ export default {
     this.loadFolders();
   },
   methods: {
+    // donateLink() {
+    //   console.log('donate')
+    //   window.location = "https://www.paypal.com/donate?hosted_button_id=ZGVSUWAXLH2SY"
+    // },
     togglePages(index) {
       this.openPages[index][index] = !this.openPages[index][index];
     },
@@ -258,6 +269,9 @@ export default {
 </script>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Roboto:wght@300;400&display=swap');
+
 body {
   margin: 0;
 }
@@ -266,13 +280,14 @@ body {
   background-image: linear-gradient(137deg, #423759 -85%, #19192d 100%);
   width: 520px;
   padding: 24px 65px;
-  font-family: "Lato", sans-serif;
+  font-family: 'Roboto', sans-serif;
+  min-height:400px;
 }
 
 .booksmart__logo {
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .booksmart__logo img {
@@ -287,34 +302,41 @@ body {
 }
 
 .booksmart__add-folder {
+  position: relative;
   width: 262px;
-  height: 71px;
-  border-radius: 10px;
-  box-shadow: 0 4px -1px 1px rgba(92, 69, 69, 0.5);
-  background: url("../assets/bookmark_add_folder_bg.png") no-repeat;
-  background-size: contain;
+  height: 53px;
+  border-radius: 3px;
+  box-shadow: 0 4px 8px 1px rgba(31, 30, 30, 0.5);
+  background-image: linear-gradient(169deg, #543f95 2%, #d66175 79%);
+  /* background: url("../assets/bookmark_add_folder_bg.png") no-repeat;
+  background-size: contain; */
   margin: 0 auto 20px;
-  padding: 14px 25px;
+  padding: 14px 43px;
 }
 
 .booksmart__add-folder h2 {
   font-size: 12px;
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   margin-top: 0;
 }
+ /* .booksmart__input-folder-wrapper {
+   display:flex;
+   justify-content: center;
+   align-items: center;
+ } */
 
 .booksmart__add-folder input {
-  border-radius: 8px;
-  background-color: rgba(62, 58, 58, 0.66);
-  width: 178px;
-  height: 25px;
+  border-radius: 3px;
+  background-color: rgba(26, 25, 25, 0.66);  
+  width: 249px;
+  height: 30px;
   border: none;
   padding-left: 10px;
   color: white;
-  font-family: "Lato", sans-serif;
+  font-family: 'Roboto', sans-serif;
   outline: none;
-  margin-right: 12px;
+  /* margin-right: 12px; */
 }
 
 .booksmart__add-folder input::placeholder {
@@ -326,15 +348,19 @@ body {
 
 .booksmart__add-folder-button {
   width: 32px;
-  height: 25px;
-  background-color: #2cc6b0;
-  border-radius: 8px;
+  height: 26px;
+  background-color: #1bbc98;
+  border-radius: 3px;
   border: none;
   color: white;
   font-size: 18px;
   outline: none;
   cursor: pointer;
+  position: absolute;
+    top: 38px;
+    right: 47px;
 }
+
 .booksmart__folders-list {
   list-style-type: none;
   text-align: center;
@@ -353,12 +379,10 @@ body {
   padding:4px;
   width: 145px;
   height: 26px;
-  border-radius: 14px;
+  border-radius: 3px;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
   background-color: #b95072;
-  font-size: 12px;
   text-align: center;
-  color: white;
   display: inline-block;
   margin-right: 10px;
   position: relative;
@@ -368,11 +392,17 @@ body {
   align-items: center;
 }
 
+.booksmart__folder-label h3 {
+  font-size: 14px;
+    color: white;
+    font-weight: 400;
+}
+
 .booksmart__dropdown-button {
   background: url("../assets/chevron.svg") 3px 5px no-repeat !important;
-  position: relative;
-  left: -20px;
-  top: -1px;
+  position: absolute;
+  left: 10px;
+  top: 11px;
   width: 10px;
   height: 10px;
   color: white;
@@ -388,8 +418,8 @@ body {
 }
 .booksmart__dropdown-button-hide {
   transform: rotate(-180deg);
-  left: -17px;
-  top: 3px;
+  left: 13px;
+  top: 15px;
 }
 
 
@@ -428,7 +458,7 @@ body {
 .booksmart__links-list {
   display: block;
   padding: 12px 20px;
-  border-radius: 14px;
+  border-radius: 3px;
   background: white;
 }
 
@@ -441,7 +471,6 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  padding-bottom: 5px;
 }
 
 .booksmart__link-item:last-child {
@@ -476,27 +505,39 @@ body {
   left: 0;
   right: 0;
   background: white;
-  border-radius: 10px;
+  border-radius: 3px;
   box-shadow: 0 4px 13px 1000px rgb(4 4 4 / 50%);
   text-align: center;
-  padding: 12px;
+  padding: 16px;
 }
 
 .booksmart_delete-confirmation h2 {
   margin: 0;
-  color: #19192d;
+  color: #131313;
+  font-size:16px;
+  margin-bottom:10px;
 }
 
 .booksmart_delete-confirmation p {
-  color: #423759;
+  color: #585757;
+  font-size:12px;
+  margin-bottom:10px;
 }
 
 .booksmart_delete-confirmation button {
-  background: #d55962;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 12px;
+  background: white;
+  color: #585757;
+  font-size:14px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px 0 rgba(140, 138, 138, 0.5);
+  border-style: solid;
+  border-width: 2px;
+  border-image-source: linear-gradient(171deg, #543f95 -4%, #d66175 83%);
+  border-image-slice: 1;
+  background-image: linear-gradient(to bottom, var(--fill-white-bg), var(--fill-white-bg)), linear-gradient(171deg, #543f95 -4%, #d66175 83%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  padding: 4px 12px;
   outline: none;
   cursor: pointer;
 }
@@ -504,5 +545,38 @@ body {
 .booksmart_delete-confirmation .buttons {
   display: flex;
   justify-content: space-around;
+}
+
+.booksmart__donate-label {
+  position:absolute;
+  bottom:10px;
+  right:-43px;
+  background:white;
+  padding:5px 10px;
+  border-top-left-radius:10px;
+  border-bottom-left-radius:10px;
+  width: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  transition: all .3s ease;
+  cursor:pointer;
+}
+
+.booksmart__donate-label:hover {
+  right:0;
+}
+
+.booksmart__donate-label img {
+  margin-right:5px;
+  height:25px;
+}
+
+.booksmart__donate-label span {
+  font-size:11px;
+  color:#2e2c2c;
+  font-family: 'Caveat', cursive;
+  line-height: 1;
 }
 </style>
