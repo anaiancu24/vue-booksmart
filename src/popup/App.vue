@@ -219,10 +219,6 @@ export default {
     this.loadFolders();
   },
   methods: {
-    // donateLink() {
-    //   console.log('donate')
-    //   window.location = "https://www.paypal.com/donate?hosted_button_id=ZGVSUWAXLH2SY"
-    // },
     togglePages(index) {
       this.openPages[index][index] = !this.openPages[index][index];
     },
@@ -281,7 +277,8 @@ body {
   width: 520px;
   padding: 24px 65px;
   font-family: 'Roboto', sans-serif;
-  min-height:400px;
+  min-height:250px;
+  position:relative;
 }
 
 .booksmart__logo {
@@ -308,9 +305,7 @@ body {
   border-radius: 3px;
   box-shadow: 0 4px 8px 1px rgba(31, 30, 30, 0.5);
   background-image: linear-gradient(169deg, #543f95 2%, #d66175 79%);
-  /* background: url("../assets/bookmark_add_folder_bg.png") no-repeat;
-  background-size: contain; */
-  margin: 0 auto 20px;
+  margin: 0 auto 35px;
   padding: 14px 43px;
 }
 
@@ -320,11 +315,7 @@ body {
   margin-bottom: 7px;
   margin-top: 0;
 }
- /* .booksmart__input-folder-wrapper {
-   display:flex;
-   justify-content: center;
-   align-items: center;
- } */
+
 
 .booksmart__add-folder input {
   border-radius: 3px;
@@ -336,7 +327,6 @@ body {
   color: white;
   font-family: 'Roboto', sans-serif;
   outline: none;
-  /* margin-right: 12px; */
 }
 
 .booksmart__add-folder input::placeholder {
